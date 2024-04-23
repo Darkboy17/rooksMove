@@ -5,12 +5,15 @@ const { Server } = require('socket.io');
 // Create an Express application
 const app = express();
 
+// Dynamically set the allowed origin based on the environment
+const allowedOrigin = process.env.CLIENT_ORIGIN || 'http://localhost:3000';
+
 // Create an HTTP server using the Express application
 const httpServer = http.createServer(app);
 
 const io = require("socket.io")(httpServer, {
   cors: {
-    origin: "http://localhost:3000",
+    origin: allowedOrigin,
     methods: ["GET", "POST"]
   }
 });
