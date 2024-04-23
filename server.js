@@ -1,17 +1,15 @@
-var express = require("express");
-var app = express();
-var http = require("http").Server(app);
-var io = require("socket.io")(http);
+const express = require('express');
+const http = require('http');
+const { Server } = require('socket.io');
 const cors = require('cors');
 
-let playerCount = 0; // Initialize player count
-let players = {};
-let currentPlayerTurn; // Add this line after the playerCount declaration
+const app = express();
 
-let startCount = 0; // Keeps track of how many players have clicked "Start"
-
-// Enable CORS for all routes
+// Apply CORS middleware
 app.use(cors());
+
+const server = http.createServer(app);
+const io = new Server(server);
 
 // Serve static files from the 'public' directory
 app.use(express.static("public")); 
@@ -23,6 +21,12 @@ app.use("/assets", express.static("assets"));
 app.get("/", function (req, res) {
   res.sendFile(__dirname + "/index.html"); 
 });
+
+let playerCount = 0; // Initialize player count
+let players = {};
+let currentPlayerTurn; // Add this line after the playerCount declaration
+
+let startCount = 0; // Keeps track of how many players have clicked "Start"
 
 // sockets for listening and emitting to the client
 io.on("connection", function (socket) {
@@ -168,6 +172,6 @@ function broadcastCurrentTurn() {
 
 var port = process.env.PORT || 3000;
 
-http.listen(port, function () {
+server.listen(port, function () {
   console.log("listening on *: " + port);
 });
