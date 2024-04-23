@@ -1,32 +1,22 @@
-const express = require('express');
-const http = require('http');
-const { Server } = require('socket.io');
+const express = require("express");
+const http = require("http");
+const socketIO = require("socket.io");
+const cors = require("cors");
 
 // Create an Express application
 const app = express();
-
-// Dynamically set the allowed origin based on the environment
-const allowedOrigin = process.env.CLIENT_ORIGIN || 'http://localhost:3000';
-
-// Create an HTTP server using the Express application
 const httpServer = http.createServer(app);
-
-const io = require("socket.io")(httpServer, {
-  cors: {
-    origin: allowedOrigin,
-    methods: ["GET", "POST"]
-  }
-});
+const io = require("socket.io")(httpServer, { cors: { origin: "*" } });
 
 // Serve static files from the 'public' directory
-app.use(express.static("public")); 
+app.use(express.static("public"));
 
 // Serve static files from the 'public' directory
 app.use("/assets", express.static("assets"));
 
 // Serve your main HTML file
 app.get("/", function (req, res) {
-  res.sendFile(__dirname + "/index.html"); 
+  res.sendFile(__dirname + "/index.html");
 });
 
 let playerCount = 0; // Initialize player count
