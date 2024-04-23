@@ -1,27 +1,17 @@
 var express = require("express");
 var app = express();
 var http = require("http").Server(app);
-
-
-// for CORS ploicy stuff
-const { Server } = require('socket.io');
-const server = http.createServer(app);
-
-const io = new Server(server, {
-  cors: {
-     origin: "*", // Allow all origins
-     methods: ["GET", "POST"], // Allowed methods
-     allowedHeaders: ["my-custom-header"], // Allowed headers
-     credentials: true // Allow credentials
-  }
- });
-
+var io = require("socket.io")(http);
+const cors = require('cors');
 
 let playerCount = 0; // Initialize player count
 let players = {};
 let currentPlayerTurn; // Add this line after the playerCount declaration
 
-let startCount = 0; // Keeps track of how many players have clicked "Start"`
+let startCount = 0; // Keeps track of how many players have clicked "Start"
+
+// Enable CORS for all routes
+app.use(cors());
 
 // Serve static files from the 'public' directory
 app.use(express.static("public")); 
