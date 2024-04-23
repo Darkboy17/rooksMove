@@ -1,7 +1,21 @@
 var express = require("express");
 var app = express();
 var http = require("http").Server(app);
-var io = require("socket.io")(http);
+
+
+// for CORS ploicy stuff
+const { Server } = require('socket.io');
+const server = http.createServer(app);
+
+const io = new Server(server, {
+  cors: {
+     origin: "*", // Allow all origins
+     methods: ["GET", "POST"], // Allowed methods
+     allowedHeaders: ["my-custom-header"], // Allowed headers
+     credentials: true // Allow credentials
+  }
+ });
+
 
 let playerCount = 0; // Initialize player count
 let players = {};
