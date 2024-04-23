@@ -6,7 +6,9 @@ const cors = require("cors");
 // Create an Express application
 const app = express();
 const httpServer = http.createServer(app);
-const io = require("socket.io")(httpServer, { cors: { origin: "*" } });
+
+// allow all origins
+const io = require("socket.io")(httpServer, { cors: { origin: ["https://rooks-move.vercel.app/", "http://localhost:3000"] } });
 
 // Serve static files from the 'public' directory
 app.use(express.static("public"));
