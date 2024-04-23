@@ -1,15 +1,19 @@
 const express = require('express');
 const http = require('http');
 const { Server } = require('socket.io');
-const cors = require('cors');
 
+// Create an Express application
 const app = express();
 
-// Apply CORS middleware
-app.use(cors());
+// Create an HTTP server using the Express application
+const httpServer = http.createServer(app);
 
-const server = http.createServer(app);
-const io = new Server(server);
+const io = require("socket.io")(httpServer, {
+  cors: {
+    origin: "http://localhost:3000",
+    methods: ["GET", "POST"]
+  }
+});
 
 // Serve static files from the 'public' directory
 app.use(express.static("public")); 
@@ -172,6 +176,6 @@ function broadcastCurrentTurn() {
 
 var port = process.env.PORT || 3000;
 
-server.listen(port, function () {
+httpServer.listen(port, function () {
   console.log("listening on *: " + port);
 });
