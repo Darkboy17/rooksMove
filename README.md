@@ -32,12 +32,13 @@ Rook's Move is an online multiplayer game where two players compete against each
 
 ## How to Play as a Normal User
 
-1.  **Access the Game**: Navigate to the game's URL in your web browser.
+1.  **Access the Game**: Navigate to the game's URL in your web browser:
+
 		http://rooksmove.lu7fuf.com.ar:3000/
 
 3.  **Connect to the Game**: Click the "Start" button to connect to the game server.
 
-4.  **Wait for an Opponent**: The game will search for an opponent. Once found, the game will start automatically.
+4.  **Wait for an Opponent**: The game will search for an opponent. Once found, the game will start automatically. If you just want to test the game, open another tab and visit the same link provided above. Place the two windows side to side, click "Start" on the first window and then repeat for the second window.
 
 5.  **Make Your Move**: When it's your turn, click on the highlighted path on the chessboard to move the rook. Remember, you must try to move the rook to the winning position but keeping in mind not to let the opponent get there first.
 
