@@ -70,7 +70,7 @@ Before running the Game, ensure you have the following installed on your system:
 
 ## Installation
 
-1. Clone the repository to your local machine:
+1. First, open your code editor and switch to your current directory. Then clone the repository to your local machine by running :
 
   
 
