@@ -1,13 +1,10 @@
 const express = require("express");
 const http = require("http");
-const socketIO = require("socket.io");
-const cors = require("cors");
 
 // Create an Express application
 const app = express();
 const httpServer = http.createServer(app);
 
-// allow all origins
 const io = require("socket.io")(httpServer, { cors: { origin: "*" } });
 
 // Serve static files from the 'public' directory
@@ -37,11 +34,11 @@ io.on("connection", function (socket) {
   // A socket to broadast moving of rook to both clients
   socket.on("rookMoved", (position) => {
     // Check if it's the current player's turn
-    console.log("rookMOved event entered!!!");
+    // console.log("rookMOved event entered!!!");
 
-    socket.broadcast.emit("opponentRookMoved", position);
     // Broadcast the rook's new position to the other player and also turn change
-    console.log("Rook moved to:", position);
+    socket.broadcast.emit("opponentRookMoved", position);
+    //console.log("Rook moved to:", position);
   });
 
   // Listen for the 'startGame' event
@@ -166,7 +163,8 @@ function broadcastCurrentTurn() {
       (key) => players[key] === currentPlayerTurn
     ),
   });
-  console.log("currentSocketID", currentSocketID);
+
+  //console.log("currentSocketID", currentSocketID);
 }
 
 var port = process.env.PORT || 3000;
