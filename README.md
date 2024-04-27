@@ -14,6 +14,10 @@ Rook's Move is an online multiplayer game where two players compete against each
 
 3.  **Game Start**: When two players are connected, the game will automatically start. Players will be notified, and the countdown timer will begin.
 
+## Gameplay Screenshots
+<img src="https://github.com/Darkboy17/rooksMove/assets/26376179/6c8b0983-17f5-4bb8-b02e-a4d00967181e" width="30%"></img> <img src="https://github.com/Darkboy17/rooksMove/assets/26376179/7aef93c3-f282-41ce-85ef-06405821fc6d" width="30%"></img> <img src="https://github.com/Darkboy17/rooksMove/assets/26376179/226fa916-699e-492b-83d9-532c6cf4b233" width="60%"></img> 
+
+
 ### Moving the Rook
 
 -   **Rules for Movement**: Players can move the rook piece only to the left or down, and they must move it to a new square on the chessboard as guided by highlighters.
