@@ -146,6 +146,7 @@ Open a second terminal from the repo root:
 
 ```powershell
 cd frontend
+copy .env.example .env
 npm install
 npm run dev
 ```
@@ -163,16 +164,39 @@ During development, Webpack proxies:
 
 That means local frontend code can call the backend without hardcoding production URLs.
 
-## Frontend Runtime URL Overrides
+## Frontend Environment Variables
 
-The frontend defaults to:
+Create `frontend/.env` from `frontend/.env.example`.
 
-```js
-window.ROOKS_API_BASE = "http://localhost:3000";
-window.ROOKS_SOCKET_BASE = "http://localhost:3000";
+Local development:
+
+```text
+ROOKS_API_BASE=http://localhost:3000
+ROOKS_SOCKET_BASE=http://localhost:3000
 ```
 
-You can override those globals before `bundle.js` loads in `frontend/public/index.html` for production hosting. If the frontend and backend are served from the same origin behind a reverse proxy, set both to the deployed backend origin or use same-origin routing as appropriate for your host.
+Production example:
+
+```text
+ROOKS_API_BASE=https://api.yourdomain.com
+ROOKS_SOCKET_BASE=https://api.yourdomain.com
+```
+
+Webpack reads these values at build time and injects them into the browser bundle. Rebuild the frontend after changing `.env`:
+
+```powershell
+cd frontend
+npm run build
+```
+
+The frontend still supports browser globals as a final override if you ever need runtime configuration before `bundle.js` loads:
+
+```html
+<script>
+  window.ROOKS_API_BASE = "https://api.yourdomain.com";
+  window.ROOKS_SOCKET_BASE = "https://api.yourdomain.com";
+</script>
+```
 
 ## Local Development Commands
 

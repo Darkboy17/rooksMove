@@ -9,10 +9,6 @@
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 
     <script>
-        // API base defaults (override before loading bundle if needed)
-        window.ROOKS_API_BASE = window.ROOKS_API_BASE || "http://localhost:3000";
-        window.ROOKS_SOCKET_BASE = window.ROOKS_SOCKET_BASE || "http://localhost:3000";
-
         try {
             if (window.localStorage.getItem("rooks_move_session_hint") === "1") {
                 document.documentElement.classList.add("has-session-hint");

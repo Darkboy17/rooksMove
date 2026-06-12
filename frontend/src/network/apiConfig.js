@@ -1,5 +1,6 @@
-const DEFAULT_API_BASE = "http://localhost:3000";
-const DEFAULT_SOCKET_BASE = "http://localhost:3000";
+const DEFAULT_API_BASE = process.env.ROOKS_API_BASE || "http://localhost:3000";
+const DEFAULT_SOCKET_BASE =
+  process.env.ROOKS_SOCKET_BASE || "http://localhost:3000";
 
 /**
  * Reads an optional browser-global URL override.
