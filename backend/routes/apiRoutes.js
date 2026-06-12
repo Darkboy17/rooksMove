@@ -1,4 +1,6 @@
 const express = require("express");
+const { getOpenApiSpec } = require("../docs/openApiSpec");
+const { renderSwaggerPage } = require("../docs/swaggerPage");
 
 const router = express.Router();
 
@@ -67,180 +69,6 @@ function renderWelcomePage() {
   });
 }
 
-/**
- * Builds a lightweight docs page that links to the OpenAPI JSON.
- */
-function renderDocsPage() {
-  return renderPage({
-    title: "Rooks Move API Docs",
-    body: `
-      <h1>API Docs</h1>
-      <p>The OpenAPI document is available as JSON.</p>
-      <p><a href="/api/docs/swagger.json">Open swagger.json</a></p>
-    `,
-  });
-}
-
-/**
- * Returns the OpenAPI contract for the public REST routes.
- */
-function getOpenApiSpec() {
-  return {
-    openapi: "3.0.3",
-    info: {
-      title: "Rooks Move API",
-      version: "1.0.0",
-    },
-    servers: [{ url: "/" }],
-    tags: [{ name: "Health" }, { name: "Auth" }, { name: "AI" }],
-    paths: {
-      "/api/health": {
-        get: {
-          tags: ["Health"],
-          summary: "Health check",
-          responses: {
-            "200": {
-              description: "OK",
-              content: {
-                "application/json": {
-                  schema: {
-                    type: "object",
-                    properties: { status: { type: "string" } },
-                    required: ["status"],
-                  },
-                },
-              },
-            },
-          },
-        },
-      },
-      "/api/auth/register": {
-        post: {
-          tags: ["Auth"],
-          summary: "Register user",
-          requestBody: {
-            required: true,
-            content: {
-              "application/json": {
-                schema: {
-                  type: "object",
-                  properties: {
-                    email: { type: "string" },
-                    password: { type: "string" },
-                    name: { type: "string" },
-                  },
-                  required: ["email", "password", "name"],
-                },
-              },
-            },
-          },
-          responses: {
-            "201": { description: "Created" },
-            "409": { description: "Email already exists" },
-          },
-        },
-      },
-      "/api/auth/login": {
-        post: {
-          tags: ["Auth"],
-          summary: "Login user",
-          requestBody: {
-            required: true,
-            content: {
-              "application/json": {
-                schema: {
-                  type: "object",
-                  properties: {
-                    email: { type: "string" },
-                    password: { type: "string" },
-                  },
-                  required: ["email", "password"],
-                },
-              },
-            },
-          },
-          responses: {
-            "200": { description: "Authenticated session" },
-            "401": { description: "Invalid credentials" },
-          },
-        },
-      },
-      "/api/auth/logout": {
-        post: {
-          tags: ["Auth"],
-          summary: "Logout user",
-          responses: {
-            "204": { description: "No Content" },
-          },
-        },
-      },
-      "/api/auth/refresh": {
-        post: {
-          tags: ["Auth"],
-          summary: "Refresh access token from the refresh cookie",
-          responses: {
-            "200": { description: "Refreshed session" },
-            "401": { description: "Missing or expired refresh session" },
-          },
-        },
-      },
-      "/api/auth/me": {
-        get: {
-          tags: ["Auth"],
-          summary: "Get current user",
-          security: [{ bearerAuth: [] }],
-          responses: {
-            "200": { description: "Current user" },
-            "401": { description: "Unauthorized" },
-          },
-        },
-      },
-      "/api/ai/move": {
-        post: {
-          tags: ["AI"],
-          summary: "Get an AI move",
-          security: [{ bearerAuth: [] }],
-          requestBody: {
-            required: true,
-            content: {
-              "application/json": {
-                schema: {
-                  type: "object",
-                  properties: {
-                    position: {
-                      type: "object",
-                      properties: {
-                        col: { type: "integer", minimum: 1, maximum: 8 },
-                        row: { type: "integer", minimum: 1, maximum: 8 },
-                      },
-                      required: ["col", "row"],
-                    },
-                  },
-                  required: ["position"],
-                },
-              },
-            },
-          },
-          responses: {
-            "200": { description: "AI move" },
-            "400": { description: "Invalid board position" },
-            "401": { description: "Unauthorized" },
-          },
-        },
-      },
-    },
-    components: {
-      securitySchemes: {
-        bearerAuth: {
-          type: "http",
-          scheme: "bearer",
-          bearerFormat: "JWT",
-        },
-      },
-    },
-  };
-}
-
 router.get("/", (req, res) => {
   res.status(200).type("html").send(renderWelcomePage());
 });
@@ -250,7 +78,11 @@ router.get("/health", (req, res) => {
 });
 
 router.get("/docs", (req, res) => {
-  res.status(200).type("html").send(renderDocsPage());
+  res.status(200).type("html").send(renderSwaggerPage());
+});
+
+router.get("/docs/openapi.json", (req, res) => {
+  res.status(200).json(getOpenApiSpec());
 });
 
 router.get("/docs/swagger.json", (req, res) => {
