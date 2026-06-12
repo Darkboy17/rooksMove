@@ -13,8 +13,9 @@ function getRefreshCookieMaxAge() {
 function setRefreshCookie(res, token) {
   res.cookie(env.refreshCookieName, token, {
     httpOnly: true,
-    secure: env.isProduction,
-    sameSite: env.isProduction ? "none" : "lax",
+    secure: env.refreshCookieSecure,
+    sameSite: env.refreshCookieSameSite,
+    partitioned: env.refreshCookiePartitioned,
     maxAge: getRefreshCookieMaxAge(),
     path: "/",
   });
@@ -26,8 +27,9 @@ function setRefreshCookie(res, token) {
 function clearRefreshCookie(res) {
   res.clearCookie(env.refreshCookieName, {
     httpOnly: true,
-    secure: env.isProduction,
-    sameSite: env.isProduction ? "none" : "lax",
+    secure: env.refreshCookieSecure,
+    sameSite: env.refreshCookieSameSite,
+    partitioned: env.refreshCookiePartitioned,
     path: "/",
   });
 }

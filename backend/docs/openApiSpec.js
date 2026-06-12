@@ -107,7 +107,8 @@ function getOpenApiSpec() {
               headers: {
                 "Set-Cookie": {
                   schema: { type: "string" },
-                  description: "HTTP-only refresh token cookie",
+                  description:
+                    "HTTP-only refresh token cookie. Cross-site deployments should send it as SameSite=None; Secure; Partitioned.",
                 },
               },
               content: {
@@ -155,7 +156,8 @@ function getOpenApiSpec() {
               headers: {
                 "Set-Cookie": {
                   schema: { type: "string" },
-                  description: "HTTP-only refresh token cookie",
+                  description:
+                    "HTTP-only refresh token cookie. Cross-site deployments should send it as SameSite=None; Secure; Partitioned.",
                 },
               },
               content: {

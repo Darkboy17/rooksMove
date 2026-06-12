@@ -129,7 +129,21 @@ HOST=0.0.0.0
 MONGODB_DB_NAME=rooks_move
 ACCESS_TOKEN_TTL_SECONDS=900
 REFRESH_TOKEN_TTL_DAYS=30
+REFRESH_COOKIE_SAME_SITE=lax
+REFRESH_COOKIE_SECURE=false
+REFRESH_COOKIE_PARTITIONED=false
 ```
+
+For production with Vercel frontend and VM backend on different domains, set:
+
+```text
+NODE_ENV=production
+REFRESH_COOKIE_SAME_SITE=none
+REFRESH_COOKIE_SECURE=true
+REFRESH_COOKIE_PARTITIONED=true
+```
+
+Cross-site refresh cookies will be rejected by browsers unless the cookie is sent as `SameSite=None; Secure`. Some browsers also warn about future third-party cookie blocking unless the cookie includes the `Partitioned` attribute.
 
 Optional AI:
 
@@ -283,6 +297,9 @@ MONGODB_DB_NAME=rooks_move
 JWT_SECRET=replace-with-a-long-random-secret
 ACCESS_TOKEN_TTL_SECONDS=900
 REFRESH_TOKEN_TTL_DAYS=30
+REFRESH_COOKIE_SAME_SITE=none
+REFRESH_COOKIE_SECURE=true
+REFRESH_COOKIE_PARTITIONED=true
 GROQ_API_KEY=
 GROQ_MODEL=llama-3.3-70b-versatile
 ```
