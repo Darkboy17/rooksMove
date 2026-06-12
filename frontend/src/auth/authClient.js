@@ -1,4 +1,4 @@
-import { API_BASE } from "../network/apiConfig";
+import { API_BASE, buildApiUrl } from "../network/apiConfig";
 
 let accessToken = null;
 let currentUser = null;
@@ -342,19 +342,20 @@ export async function logout(options = {}) {
  * Fetches an API resource with bearer auth and one automatic refresh retry.
  */
 export async function apiFetch(path, options = {}) {
+  const url = buildApiUrl(path);
   const headers = {
     ...(options.headers || {}),
     ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
   };
 
-  let response = await fetch(path, {
+  let response = await fetch(url, {
     ...options,
     credentials: "include",
     headers,
   });
 
   if (response.status === 401 && (await refreshSession({ silent: true }))) {
-    response = await fetch(path, {
+    response = await fetch(url, {
       ...options,
       credentials: "include",
       headers: {

@@ -27,3 +27,14 @@ export const SOCKET_BASE = getOverrideFromWindow(
   "ROOKS_SOCKET_BASE",
   DEFAULT_SOCKET_BASE
 );
+
+/**
+ * Resolves an API path against the configured backend origin.
+ */
+export function buildApiUrl(path) {
+  const value = String(path || "");
+  if (/^https?:\/\//i.test(value)) return value;
+  if (!API_BASE) return value;
+
+  return `${API_BASE}${value.startsWith("/") ? value : `/${value}`}`;
+}
