@@ -314,6 +314,33 @@ If you use Nginx or another reverse proxy, route these paths to the backend cont
 
 Socket.IO also needs websocket upgrade headers enabled in the proxy.
 
+## Backend PowerShell Deployment Helper
+
+`backend/deploy-backend.ps1` can build the backend Docker image, push it to a registry, upload an env file, configure Nginx/Certbot, and replace the running container on a Linux VM over SSH.
+
+Run it from the `backend/` folder:
+
+```powershell
+cd backend
+.\deploy-backend.ps1 `
+  -ImageRepository your-dockerhub-user/rooks-move-backend `
+  -Tag arm64 `
+  -Platform linux/arm64 `
+  -SshHost 203.0.113.10 `
+  -SshUser ubuntu `
+  -SshKeyPath "$env:USERPROFILE\.ssh\your-vm-key" `
+  -Domain api.yourdomain.com `
+  -SiteName rooks-move-api `
+  -ContainerName rooks-move-backend `
+  -HostPort 3000 `
+  -ContainerPort 3000 `
+  -LocalEnvFile .env `
+  -RequiredEnvKeys MONGODB_URI,JWT_SECRET `
+  -CertbotMode nginx
+```
+
+Use `-SkipBuild`, `-SkipPush`, `-SkipCertbot`, `-SkipNginx`, or `-SkipRun` when you only want part of the deployment flow.
+
 ## Realtime Gameplay Notes
 
 Online matches use Socket.IO. The important realtime events include:
