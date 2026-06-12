@@ -168,26 +168,28 @@ That means local frontend code can call the backend without hardcoding productio
 
 Create `frontend/.env` from `frontend/.env.example`.
 
-Local development:
+Same-origin deployment or local development through the Webpack proxy:
 
 ```text
-ROOKS_API_BASE=http://localhost:3000
-ROOKS_SOCKET_BASE=http://localhost:3000
+ROOKS_API_BASE=
+ROOKS_SOCKET_BASE=
 ```
 
-Production example:
+Separate backend domain production example:
 
 ```text
 ROOKS_API_BASE=https://api.yourdomain.com
 ROOKS_SOCKET_BASE=https://api.yourdomain.com
 ```
 
-Webpack reads these values at build time and injects them into the browser bundle. Rebuild the frontend after changing `.env`:
+Webpack reads these values at build time and injects them into the browser bundle. Rebuild and redeploy the frontend after changing `.env`:
 
 ```powershell
 cd frontend
 npm run build
 ```
+
+If these values are blank, the frontend calls same-origin paths such as `/api/auth/login` and `/socket.io`. In production, that means your frontend host or reverse proxy must forward `/api/*` and `/socket.io/*` to the backend. If the backend is hosted on a different domain, set both variables to that backend origin before building.
 
 The frontend still supports browser globals as a final override if you ever need runtime configuration before `bundle.js` loads:
 

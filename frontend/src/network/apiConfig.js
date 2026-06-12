@@ -1,6 +1,12 @@
-const DEFAULT_API_BASE = process.env.ROOKS_API_BASE || "http://localhost:3000";
-const DEFAULT_SOCKET_BASE =
-  process.env.ROOKS_SOCKET_BASE || "http://localhost:3000";
+const DEFAULT_API_BASE = process.env.ROOKS_API_BASE || "";
+const DEFAULT_SOCKET_BASE = process.env.ROOKS_SOCKET_BASE || "";
+
+/**
+ * Normalizes a configured origin so request paths join cleanly.
+ */
+function normalizeBaseUrl(value) {
+  return String(value || "").trim().replace(/\/+$/, "");
+}
 
 /**
  * Reads an optional browser-global URL override.
@@ -8,9 +14,11 @@ const DEFAULT_SOCKET_BASE =
 function getOverrideFromWindow(key, fallback) {
   try {
     const value = window[key];
-    return typeof value === "string" && value.trim() ? value : fallback;
+    return typeof value === "string" && value.trim()
+      ? normalizeBaseUrl(value)
+      : normalizeBaseUrl(fallback);
   } catch {
-    return fallback;
+    return normalizeBaseUrl(fallback);
   }
 }
 

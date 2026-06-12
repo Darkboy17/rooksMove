@@ -2,8 +2,9 @@ const path = require("path");
 const fs = require("fs");
 const webpack = require("webpack");
 
-const DEFAULT_API_BASE = "http://localhost:3000";
-const DEFAULT_SOCKET_BASE = "http://localhost:3000";
+const DEFAULT_BROWSER_API_BASE = "";
+const DEFAULT_BROWSER_SOCKET_BASE = "";
+const DEFAULT_DEV_PROXY_TARGET = "http://localhost:3000";
 
 /**
  * Parses simple KEY=value frontend environment files.
@@ -30,10 +31,14 @@ function parseEnvFile(filePath) {
 }
 
 const frontendEnv = {
-  ROOKS_API_BASE: DEFAULT_API_BASE,
-  ROOKS_SOCKET_BASE: DEFAULT_SOCKET_BASE,
+  ROOKS_API_BASE: DEFAULT_BROWSER_API_BASE,
+  ROOKS_SOCKET_BASE: DEFAULT_BROWSER_SOCKET_BASE,
   ...parseEnvFile(path.resolve(__dirname, ".env")),
 };
+
+const apiProxyTarget = frontendEnv.ROOKS_API_BASE || DEFAULT_DEV_PROXY_TARGET;
+const socketProxyTarget =
+  frontendEnv.ROOKS_SOCKET_BASE || frontendEnv.ROOKS_API_BASE || DEFAULT_DEV_PROXY_TARGET;
 
 /**
  * Builds the browser app and serves it with API/socket proxies in development.
@@ -66,12 +71,12 @@ module.exports = {
     proxy: [
       {
         context: ["/api"],
-        target: frontendEnv.ROOKS_API_BASE,
+        target: apiProxyTarget,
         changeOrigin: true,
       },
       {
         context: ["/socket.io"],
-        target: frontendEnv.ROOKS_SOCKET_BASE,
+        target: socketProxyTarget,
         ws: true,
         changeOrigin: true,
       },
