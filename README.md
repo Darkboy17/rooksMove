@@ -191,6 +191,15 @@ npm run build
 
 If these values are blank, the frontend calls same-origin paths such as `/api/auth/login` and `/socket.io`. In production, that means your frontend host or reverse proxy must forward `/api/*` and `/socket.io/*` to the backend. If the backend is hosted on a different domain, set both variables to that backend origin before building.
 
+On Vercel, set these as project environment variables because Vercel does not use your local `frontend/.env` file:
+
+```text
+ROOKS_API_BASE=https://api.yourdomain.com
+ROOKS_SOCKET_BASE=https://api.yourdomain.com
+```
+
+Then redeploy the frontend. If these Vercel env vars are missing or blank, the built frontend will call the Vercel app origin, for example `/api/auth/login`.
+
 The frontend still supports browser globals as a final override if you ever need runtime configuration before `bundle.js` loads:
 
 ```html

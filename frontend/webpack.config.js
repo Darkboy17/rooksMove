@@ -34,11 +34,25 @@ const frontendEnv = {
   ROOKS_API_BASE: DEFAULT_BROWSER_API_BASE,
   ROOKS_SOCKET_BASE: DEFAULT_BROWSER_SOCKET_BASE,
   ...parseEnvFile(path.resolve(__dirname, ".env")),
+  ...getProcessEnv(["ROOKS_API_BASE", "ROOKS_SOCKET_BASE"]),
 };
 
 const apiProxyTarget = frontendEnv.ROOKS_API_BASE || DEFAULT_DEV_PROXY_TARGET;
 const socketProxyTarget =
   frontendEnv.ROOKS_SOCKET_BASE || frontendEnv.ROOKS_API_BASE || DEFAULT_DEV_PROXY_TARGET;
+
+/**
+ * Reads selected environment variables from the build host.
+ */
+function getProcessEnv(keys) {
+  return keys.reduce((env, key) => {
+    if (typeof process.env[key] === "string") {
+      env[key] = process.env[key];
+    }
+
+    return env;
+  }, {});
+}
 
 /**
  * Builds the browser app and serves it with API/socket proxies in development.
