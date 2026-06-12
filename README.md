@@ -1,145 +1,338 @@
-# Rook's Move Game Documentation
+# Rook's Move
 
-[Live Demo](https://rooks-move.largent.org)
+Rook's Move is a realtime browser game built around a simple tactical board rule: move the rook left or down, and be the player who lands on the bottom-left square. The project includes account auth, online matchmaking, Socket.IO gameplay sync, and an optional AI opponent backed by Groq with a local rule-based fallback.
 
-## Overview
+## What Is In This Repo
 
-Rook's Move is an online multiplayer game where two players compete against each other in a unique chess-inspired challenge. The game is designed to be engaging and strategic, offering players the opportunity to test their skills in a fast-paced environment.
+The repo is intentionally split into only two application folders:
 
-## Gameplay
+- `backend/` - Express API, Socket.IO server, MongoDB auth/session storage, game matchmaking, and AI move service.
+- `frontend/` - Webpack browser app, static HTML/assets, Phaser game scene, auth client, lobby UI, and Socket.IO client.
 
-### Starting the Game
+The root contains only repo-level files such as this README and `.gitignore`.
 
-1.  **Connect to the Game**: Upon opening the game, players will see a "Start" button. Clicking this button initiates the connection process to the game server.
+## Tech Stack
 
-2.  **Wait for Opponent**: Once a player has connected, they will wait for an opponent to join the game. The game supports two players at a time.
-
-3.  **Game Start**: When two players are connected, the game will automatically start. Players will be notified, and the countdown timer will begin.
-
-## Gameplay Screenshots
-<img src="https://github.com/Darkboy17/rooksMove/assets/26376179/6c8b0983-17f5-4bb8-b02e-a4d00967181e" width="30%"></img> <img src="https://github.com/Darkboy17/rooksMove/assets/26376179/7aef93c3-f282-41ce-85ef-06405821fc6d" width="30%"></img> <img src="https://github.com/Darkboy17/rooksMove/assets/26376179/226fa916-699e-492b-83d9-532c6cf4b233" width="60%"></img> 
-
-
-### Moving the Rook
-
--   **Rules for Movement**: Players can move the rook piece only to the left or down, and they must move it to a new square on the chessboard as guided by highlighters.
-
--   **Turn-Based Movement**: The game is turn-based. Players take turns moving the rook. The current player's turn is indicated, and players must wait for their turn to move.
-
--   **Winning the Game**: The first player to move the rook to the bottom-left corner of the chessboard within the stipulated time wins the game.
-
-### Additional Features
-
--   **Countdown Timer**: Each player has a limited amount of time (30 seconds) to make their move. If a player's time runs out before they can complete their move, the game ends.
-
--   **Realtime Updates**: The game provides real-time updates to both players, ensuring that each player is aware of the current state of the game at all times.
-
--   **Game Reset**: In case of any disconnections or errors, the game can be reset, and players can start a new game.
-
-## How to Play as a Normal User
-
-1.  **Access the Game**: Navigate to the game's URL in your web browser:
-
-		http://rooksmove.lu7fuf.com.ar:3000/
-
-3.  **Connect to the Game**: Click the "Start" button to connect to the game server.
-
-4.  **Wait for an Opponent**: The game will search for an opponent. Once found, the game will start automatically. If you just want to test the game, open another tab and visit the same link provided above. Place the two windows side to side, click "Start" on the first window and then repeat for the second window.
-
-5.  **Make Your Move**: When it's your turn, click on the highlighted path on the chessboard to move the rook. Remember, you must try to move the rook to the winning position but keeping in mind not to let the opponent get there first.
-
-6.  **Win the Game**: Be the first to move the rook to the bottom-left corner of the chessboard.
-
-## Troubleshooting
--   If you encounter any issues while playing, try refreshing the page or restarting the game.
-
--   For any technical issues or bugs, please contact the game's support team.
-
-
-## Setting up the project on your local machine
-This document provides instructions for setting up and running the Rook's Move Game on your local machine.
-
-## Table of Contents
- 1. [Prerequisites](#prerequisites)
- 2. [Installation](#installation)
- 3. [Running the Game](#running-the-game)
- 4. [Game Controls](#game-controls)
- 5.  [Game Rules](#game-rules)
- 6. [Contributing](#contributing)
- 7.  [License](#license)
-
-## Prerequisites
-Before running the Game, ensure you have the following installed on your system:
-
-- Web browser (Google Chrome, Mozilla Firefox, etc.)
-
-- Code editor (Visual Studio Code, Sublime Text, etc.)
-
-## Installation
-
-1. First, open your code editor and switch to your current directory. Then clone the repository to your local machine by running :
-
-  
-
-	bash
-
-  
-
-	`git clone https://github.com/Darkboy17/rooksMove`
-
-2. Navigate to the project directory:
-
-	bash
-
-	`cd rooksMove`
-  
-
-## Running the Game
-
-To run the Rook's Move Game, follow these steps:
-  
- 1. Open the project directory in your code editor of choice.
-
- 2. Now run the following:
-	`node server.js`
-
- 3. Go to your web browser and type or paste the following:
-	`http://localhost:3000`
-  
-
-## Game Controls
-
-- Use the mouse to interact with the Rook.
-
-- Click on any one of the cells within the highlighted path to move the Rook.
+- Runtime: Node.js
+- Backend: Express, Socket.IO, MongoDB driver
+- Frontend: Webpack, Phaser, Socket.IO client
+- Auth: custom short-lived access token plus HTTP-only refresh cookie
+- Database: MongoDB Atlas or compatible MongoDB deployment
+- Optional AI: Groq chat completion API, with deterministic local fallback
 
 ## Game Rules
 
-- The game will be played on an 8x8 chessboard.
+- The board is `8x8`.
+- The rook starts at column `8`, row `1`.
+- Players take turns moving the same rook.
+- A legal move changes exactly one coordinate:
+  - left to a smaller column, or
+  - down to a larger row.
+- Moving up, right, or diagonally is not allowed.
+- The player who moves the rook to column `1`, row `8` wins.
 
-- There will be two players, and they will take turns to move the rook. Rooks starts from the top right square.
+## Project Layout
 
-- On each turn, a player can move the rook any number of steps to the left or down, but not up, right or diagonally.
+```text
+.
+├── backend/
+│   ├── app.js
+│   ├── server.js
+│   ├── package.json
+│   ├── package-lock.json
+│   ├── .env.example
+│   ├── config/
+│   ├── db/
+│   ├── middleware/
+│   ├── realtime/
+│   ├── routes/
+│   ├── services/
+│   └── utils/
+├── frontend/
+│   ├── package.json
+│   ├── package-lock.json
+│   ├── webpack.config.js
+│   ├── public/
+│   │   ├── index.html
+│   │   └── assets/
+│   └── src/
+│       ├── auth/
+│       ├── game/
+│       ├── network/
+│       ├── ui/
+│       └── main.js
+├── .gitignore
+└── README.md
+```
 
-- The player who reaches the bottom-left corner of the board first wins the game.
+## Ignored Generated Files
 
-  ## Contributing
+These files/folders should not be committed:
 
-Contributions to the Chess Game are welcome! To contribute:
+- `backend/node_modules/`
+- `frontend/node_modules/`
+- `backend/.env`
+- `frontend/public/bundle.js`
+- `*.log`
 
-1. Fork the repository.
+`frontend/public/bundle.js` is generated by Webpack when you run `npm run build` or `npm run dev`.
 
-2. Create a new branch (`git checkout -b feature-branch`).
+## Backend Setup
 
-3. Make your changes.
+From the repo root:
 
-4. Commit your changes (`git commit -am 'Add new feature'`).
+```powershell
+cd backend
+copy .env.example .env
+npm install
+npm start
+```
 
-5. Push to the branch (`git push origin feature-branch`).
+The backend starts on:
 
-6. Create a new Pull Request.
+```text
+http://localhost:3000
+```
 
+Useful backend URLs:
 
-## License
+- `GET /api`
+- `GET /api/health`
+- `GET /api/docs`
+- `GET /api/docs/swagger.json`
+- `POST /api/auth/register`
+- `POST /api/auth/login`
+- `POST /api/auth/refresh`
+- `POST /api/auth/logout`
+- `GET /api/auth/me`
+- `POST /api/ai/move`
+- Socket.IO endpoint: `/socket.io`
 
-This Game has no license for now.
+## Backend Environment Variables
+
+Create `backend/.env` from `backend/.env.example`.
+
+Required:
+
+```text
+MONGODB_URI=mongodb+srv://<user>:<password>@<cluster-host>/rooks_move?retryWrites=true&w=majority
+JWT_SECRET=replace-with-a-long-random-secret
+```
+
+Recommended:
+
+```text
+NODE_ENV=development
+PORT=3000
+HOST=0.0.0.0
+MONGODB_DB_NAME=rooks_move
+ACCESS_TOKEN_TTL_SECONDS=900
+REFRESH_TOKEN_TTL_DAYS=30
+```
+
+Optional AI:
+
+```text
+GROQ_API_KEY=
+GROQ_MODEL=llama-3.3-70b-versatile
+```
+
+If `GROQ_API_KEY` is not set, AI mode still works by using the local strategic fallback.
+
+## Frontend Setup
+
+Open a second terminal from the repo root:
+
+```powershell
+cd frontend
+npm install
+npm run dev
+```
+
+The frontend dev server starts on:
+
+```text
+http://localhost:5173
+```
+
+During development, Webpack proxies:
+
+- `/api` to `http://localhost:3000`
+- `/socket.io` to `http://localhost:3000`
+
+That means local frontend code can call the backend without hardcoding production URLs.
+
+## Frontend Runtime URL Overrides
+
+The frontend defaults to:
+
+```js
+window.ROOKS_API_BASE = "http://localhost:3000";
+window.ROOKS_SOCKET_BASE = "http://localhost:3000";
+```
+
+You can override those globals before `bundle.js` loads in `frontend/public/index.html` for production hosting. If the frontend and backend are served from the same origin behind a reverse proxy, set both to the deployed backend origin or use same-origin routing as appropriate for your host.
+
+## Local Development Commands
+
+Backend:
+
+```powershell
+cd backend
+npm install
+npm start
+```
+
+Frontend dev server:
+
+```powershell
+cd frontend
+npm install
+npm run dev
+```
+
+Frontend production bundle:
+
+```powershell
+cd frontend
+npm run build
+```
+
+## Production Build
+
+Build the frontend:
+
+```powershell
+cd frontend
+npm install
+npm run build
+```
+
+Run the backend:
+
+```powershell
+cd backend
+npm install --omit=dev
+npm start
+```
+
+Deploy requirements:
+
+- Serve `frontend/public/index.html`.
+- Serve `frontend/public/bundle.js` after running the frontend build.
+- Serve `frontend/public/assets/*`.
+- Run the backend Node process on the configured `PORT`.
+- Ensure `/api/*` and `/socket.io/*` reach the backend.
+- Use HTTPS in production so refresh cookies and websocket traffic work reliably across devices.
+
+## Realtime Gameplay Notes
+
+Online matches use Socket.IO. The important realtime events include:
+
+- `lobby:join`
+- `lobby:leave`
+- `lobby:players`
+- `challenge:request`
+- `challenge:accept`
+- `challenge:decline`
+- `matchmaking:matched`
+- `rookMoved`
+- `opponentRookMoved`
+- `playerMoveCompleted`
+- `gameWon`
+- `gameOver`
+- `rematch:*`
+- `match:leave`
+
+Rook movement is synchronized with board coordinates:
+
+```json
+{ "col": 4, "row": 6 }
+```
+
+The client converts board coordinates into local pixel positions. This is important because desktop and mobile screens have different board sizes. Sending raw screen pixels would make the opponent rook drift or move outside the board on devices with different layouts.
+
+## Auth Flow
+
+1. User registers or logs in through `/api/auth/*`.
+2. Backend returns a short-lived access token in JSON.
+3. Backend stores the refresh token in an HTTP-only cookie.
+4. Frontend uses the access token for protected API calls and Socket.IO auth.
+5. Frontend silently refreshes the access token before expiry.
+6. Logout clears the refresh cookie and local in-memory session.
+
+## MongoDB Collections
+
+The backend creates indexes automatically when it first connects.
+
+Collections:
+
+- `users`
+- `refreshSessions`
+
+Indexes:
+
+- unique `users.email`
+- unique `refreshSessions.tokenHash`
+- TTL index on `refreshSessions.expiresAt`
+
+## Troubleshooting
+
+### Backend says `MONGODB_URI is required`
+
+Create `backend/.env` and set `MONGODB_URI`.
+
+### Login works locally but not in production
+
+Check:
+
+- Backend is running with the correct `NODE_ENV`.
+- Frontend API/socket base URLs point to the deployed backend.
+- HTTPS is enabled.
+- Reverse proxy forwards cookies and websocket upgrades.
+- MongoDB Atlas allows connections from your server IP.
+
+### Socket connects but matchmaking does not update
+
+Check:
+
+- The frontend can reach `/socket.io`.
+- Websocket upgrade is enabled in your proxy.
+- The access token is being sent in `socket.auth.token`.
+- Both users are logged in and have joined the lobby.
+
+### Rook moves outside the grid on another device
+
+Deploy both the latest frontend and backend. Current builds send board coordinates (`col`, `row`) instead of screen pixels (`x`, `y`) for online moves.
+
+### Mobile `Request to Play` requires two taps
+
+Deploy the latest frontend. Touch devices now show the `Request to Play` button immediately instead of relying on hover/focus behavior.
+
+## Manual Test Checklist
+
+1. Start backend.
+2. Start frontend.
+3. Register or log in as user A on desktop.
+4. Register or log in as user B on phone or another browser.
+5. Join the online lobby from both clients.
+6. Request a match from one client.
+7. Accept the match from the other client.
+8. Move the rook on desktop and confirm the phone rook lands on the same board square.
+9. Move the rook on phone and confirm desktop syncs correctly.
+10. Test rematch and main menu flows.
+11. Test AI mode.
+12. Test logout.
+
+## Deployment Checklist
+
+- Set production `JWT_SECRET`.
+- Set production `MONGODB_URI`.
+- Set `NODE_ENV=production`.
+- Build frontend with `npm run build`.
+- Deploy the generated frontend bundle and assets.
+- Deploy backend dependencies from `backend/package-lock.json`.
+- Confirm `/api/health` returns `{ "status": "ok" }`.
+- Confirm websocket upgrades work for `/socket.io`.
+- Test login from two devices.
+- Test online rook movement from both devices.
