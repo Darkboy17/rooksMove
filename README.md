@@ -98,8 +98,9 @@ Useful backend URLs:
 
 - `GET /api`
 - `GET /api/health`
-- `GET /api/docs`
-- `GET /api/docs/swagger.json`
+- `GET /api/docs` - interactive Swagger UI
+- `GET /api/docs/openapi.json` - raw OpenAPI JSON
+- `GET /api/docs/swagger.json` - backwards-compatible OpenAPI JSON alias
 - `POST /api/auth/register`
 - `POST /api/auth/login`
 - `POST /api/auth/refresh`
@@ -224,6 +225,70 @@ Deploy requirements:
 - Run the backend Node process on the configured `PORT`.
 - Ensure `/api/*` and `/socket.io/*` reach the backend.
 - Use HTTPS in production so refresh cookies and websocket traffic work reliably across devices.
+
+## Backend Docker Deployment
+
+The backend `Dockerfile` builds only the backend API service. It does not copy or serve the frontend.
+
+Build the image from the backend folder:
+
+```bash
+cd backend
+docker build -t rooks-move-backend .
+```
+
+Create a production env file on the VM, for example `backend.env`:
+
+```text
+NODE_ENV=production
+PORT=3000
+HOST=0.0.0.0
+MONGODB_URI=mongodb+srv://<user>:<password>@<cluster-host>/rooks_move?retryWrites=true&w=majority
+MONGODB_DB_NAME=rooks_move
+JWT_SECRET=replace-with-a-long-random-secret
+ACCESS_TOKEN_TTL_SECONDS=900
+REFRESH_TOKEN_TTL_DAYS=30
+GROQ_API_KEY=
+GROQ_MODEL=llama-3.3-70b-versatile
+```
+
+Run the container:
+
+```bash
+docker run -d \
+  --name rooks-move-backend \
+  --env-file backend.env \
+  -p 3000:3000 \
+  --restart unless-stopped \
+  rooks-move-backend
+```
+
+Verify the backend:
+
+```bash
+curl http://localhost:3000/api/health
+```
+
+Expected response:
+
+```json
+{ "status": "ok" }
+```
+
+Useful container commands:
+
+```bash
+docker logs -f rooks-move-backend
+docker stop rooks-move-backend
+docker rm rooks-move-backend
+```
+
+If you use Nginx or another reverse proxy, route these paths to the backend container:
+
+- `/api/*`
+- `/socket.io/*`
+
+Socket.IO also needs websocket upgrade headers enabled in the proxy.
 
 ## Realtime Gameplay Notes
 

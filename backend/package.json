@@ -5,7 +5,7 @@
   "description": "API and realtime backend for Rook's Move.",
   "main": "server.js",
   "scripts": {
-    "start": "node --use-system-ca server.js"
+    "start": "node server.js"
   },
   "dependencies": {
     "cors": "^2.8.5",
